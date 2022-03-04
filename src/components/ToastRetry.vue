@@ -40,7 +40,6 @@ export default defineComponent({
 
     onBeforeUnmount(() => {
       if (toastElem.value) {
-        console.log(Toast.getInstance(toastElem.value))
         Toast.getInstance(toastElem.value)?.dispose()
       }
     })
