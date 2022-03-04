@@ -16,8 +16,10 @@
       <input id="confirmation-field" class="form-control" :class="{ 'is-invalid': errors.password, 'is-valid': !errors.password && receivedValidResponse }" type="password" v-model="passwordConfirmation" required>
       <div id="password-errors" class="invalid-feedback d-block">{{ errors.password && passwordErrors }}</div>
     </div>
-    <router-link :to="{ name: 'login' }">Login instead</router-link>
-    <button class="btn btn-primary" type="submit">Create Account</button>
+    <div class="text-end">
+      <router-link :to="{ name: 'login' }">Login instead</router-link>
+      <button class="btn btn-primary ms-3" type="submit">Create Account</button>
+    </div>
   </form>
 </template>
 
@@ -74,6 +76,8 @@ export default defineComponent({
             errors.value = {} as RegisterErrors
             emit('connectionError', handleSubmission)
           }
+        } else {
+          throw e
         }
       }
     }

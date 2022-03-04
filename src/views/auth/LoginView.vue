@@ -54,7 +54,7 @@ export default defineComponent({
           email: email.value,
           password: password.value
         })
-        router.push('dashboard')
+        router.push({ name: 'dashboard' })
       } catch (e) {
         if (axios.isAxiosError(e)) {
           if (e.response) {
@@ -63,6 +63,8 @@ export default defineComponent({
             errors.value = {} as LoginErrors
             emit('connectionError', handleSubmission)
           }
+        } else {
+          throw e
         }
       }
     }

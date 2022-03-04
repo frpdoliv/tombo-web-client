@@ -41,7 +41,7 @@ export default defineComponent({
 
 <style>
   .gs-form-view {
-    width: 100rem;
+    width: 70%;
   }
 
   .getting-started-item {

@@ -44,8 +44,8 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to) => {
-  if (!isAuthenticated() && !to.meta?.middleware?.has('guest') && to.name !== 'getting-started') {
+router.beforeEach(async (to) => {
+  if (!await isAuthenticated() && !to.meta?.middleware?.has('guest') && to.name !== 'getting-started') {
     return { name: 'login' }
   }
 })
