@@ -25,7 +25,6 @@ import axios from 'axios'
 import axiosRetry from 'axios-retry'
 import { computed, defineComponent, ref } from 'vue'
 import { retryCondition } from '@/code/axios-retry-validation'
-import ToastRetry from '@/components/ToastRetry.vue'
 import router from '@/router'
 
 interface LoginErrors {
@@ -34,9 +33,8 @@ interface LoginErrors {
 }
 
 export default defineComponent({
-  // components: { ToastRetry },
-  setup () {
-    const toastElem = ref<InstanceType<typeof ToastRetry>>()
+  emits: ['connectionError'],
+  setup (_, { emit }) {
     const email = ref(null)
     const password = ref(null)
     const errors = ref({} as LoginErrors)
@@ -61,15 +59,15 @@ export default defineComponent({
         if (axios.isAxiosError(e)) {
           if (e.response) {
             errors.value = e.response.data.errors
-          } else if (e.request && toastElem.value) {
+          } else if (e.request) {
             errors.value = {} as LoginErrors
-            toastElem.value.show()
+            emit('connectionError', handleSubmission)
           }
         }
       }
     }
 
-    return { toastElem, email, password, errors, errorString, handleSubmission }
+    return { email, password, errors, errorString, handleSubmission }
   }
 })
 </script>

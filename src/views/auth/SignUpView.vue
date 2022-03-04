@@ -19,7 +19,6 @@
     <router-link :to="{ name: 'login' }">Login instead</router-link>
     <button class="btn btn-primary" type="submit">Create Account</button>
   </form>
-  <ToastRetry ref="toastElem" inner-text="Couldn't connect to the server. Check your internet connection and try again" :retry-action="handleSubmission"/>
 </template>
 
 <script lang="ts">
@@ -27,7 +26,6 @@ import { computed, defineComponent, ref } from 'vue'
 import axios from 'axios'
 import axiosRetry from 'axios-retry'
 import { retryCondition } from '@/code/axios-retry-validation'
-import ToastRetry from '@/components/ToastRetry.vue'
 import router from '@/router'
 
 interface RegisterErrors {
@@ -37,9 +35,8 @@ interface RegisterErrors {
 }
 
 export default defineComponent({
-  components: { ToastRetry },
-  setup () {
-    const toastElem = ref<InstanceType<typeof ToastRetry>>()
+  emits: ['connectionError'],
+  setup (_, { emit }) {
     const receivedValidResponse = ref(false)
     const name = ref('')
     const email = ref('')
@@ -58,9 +55,6 @@ export default defineComponent({
     })
 
     const handleSubmission = async () => {
-      if (!toastElem.value) {
-        throw new Error('Expected connection error toast')
-      }
       try {
         await delayedAxios.get('/sanctum/csrf-cookie')
         await delayedAxios.post('/register', {
@@ -76,15 +70,15 @@ export default defineComponent({
           if (e.response) {
             receivedValidResponse.value = true
             errors.value = e.response.data.errors
-          } else if (e.request && toastElem.value) {
+          } else if (e.request) {
             errors.value = {} as RegisterErrors
-            toastElem.value.show()
+            emit('connectionError', handleSubmission)
           }
         }
       }
     }
 
-    return { toastElem, receivedValidResponse, name, email, password, passwordConfirmation, errors, nameErrors, emailErrors, passwordErrors, handleSubmission }
+    return { receivedValidResponse, name, email, password, passwordConfirmation, errors, nameErrors, emailErrors, passwordErrors, handleSubmission }
   }
 })
 </script>
