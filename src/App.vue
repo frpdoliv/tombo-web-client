@@ -6,25 +6,20 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import router from './router'
-import axios from 'axios'
 import LoadingView from '@/views/LoadingView.vue'
+import { fetchAuthenticationState } from '@/code/authentication-status-manager'
 
 export default defineComponent({
   components: { LoadingView },
   setup () {
     const ready = ref(false)
 
-    axios.get('/api/check-auth', {
-      method: 'GET'
-    })
+    fetchAuthenticationState()
       .then(() => {
         ready.value = true
         router.push('dashboard')
       })
-      .catch(() => {
-        ready.value = true
-        router.push('getting-started')
-      })
+
     return { ready }
   }
 })
