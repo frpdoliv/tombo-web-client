@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="handleSubmission">
+  <form id="sign-up-form" class="d-inline-block" @submit.prevent="handleSubmission">
     <label class="form-label" for="name">Name: </label>
     <input id="name" class="form-control" :class="{ 'is-invalid': errors.name, 'is-valid': !errors.name && receivedValidResponse }" type="text" v-model="name" required>
     <div class="invalid-feedback d-block">{{ errors.name && nameErrors }}</div>
@@ -16,7 +16,8 @@
       <input id="confirmation-field" class="form-control" :class="{ 'is-invalid': errors.password, 'is-valid': !errors.password && receivedValidResponse }" type="password" v-model="passwordConfirmation" required>
       <div id="password-errors" class="invalid-feedback d-block">{{ errors.password && passwordErrors }}</div>
     </div>
-    <button class="btn btn-primary" type="submit">Go!</button>
+    <router-link :to="{ name: 'login' }">Login instead</router-link>
+    <button class="btn btn-primary" type="submit">Create Account</button>
   </form>
   <ToastRetry ref="toastElem" inner-text="Couldn't connect to the server. Check your internet connection and try again" :retry-action="handleSubmission"/>
 </template>
@@ -40,10 +41,10 @@ export default defineComponent({
   setup () {
     const toastElem = ref<InstanceType<typeof ToastRetry>>()
     const receivedValidResponse = ref(false)
-    const name = ref('ExampleUser')
-    const email = ref('asdf@example.com')
-    const password = ref('123')
-    const passwordConfirmation = ref('123')
+    const name = ref('')
+    const email = ref('')
+    const password = ref('')
+    const passwordConfirmation = ref('')
     const errors = ref({} as RegisterErrors)
     const nameErrors = computed(() => errors.value.name.join(' '))
     const emailErrors = computed(() => errors.value.email.join(' '))
@@ -87,6 +88,15 @@ export default defineComponent({
   }
 })
 </script>
+
+<style>
+  #sign-up-form {
+    background-color: #2E2E33;
+    border-radius: 15px;
+    box-shadow: 4px 4px 5px black, 1px 1px 6px black;
+    padding: 2.5rem;
+  }
+</style>
 
 <style scoped>
   #password-container {

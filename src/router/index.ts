@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import GettingStartedView from '../views/GettingStartedView.vue'
 import DashboardView from '../views/DashboardView.vue'
-import SignUpView from '../views/auth/SignUpView.vue'
+import LoginView from '@/views/auth/LoginView.vue'
+import SignUpView from '@/views/auth/SignUpView.vue'
 import { isAuthenticated } from '@/code/authentication-status-manager'
 
 declare module 'vue-router' {
@@ -17,8 +18,16 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/getting-started',
-    name: 'getting-started',
     component: GettingStartedView,
+    children: [{
+      path: '/login',
+      name: 'login',
+      components: { GettingStartedForm: LoginView }
+    }, {
+      path: '/sign-up',
+      name: 'sign-up',
+      components: { GettingStartedForm: SignUpView }
+    }],
     meta: {
       middleware: new Set(['guest'])
     }
@@ -27,14 +36,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/dashboard',
     name: 'dashboard',
     component: DashboardView
-  },
-  {
-    path: '/sign-up',
-    name: 'sign-up',
-    component: SignUpView,
-    meta: {
-      middleware: new Set(['guest'])
-    }
   }
 ]
 
@@ -45,7 +46,7 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   if (!isAuthenticated() && !to.meta?.middleware?.has('guest') && to.name !== 'getting-started') {
-    return { name: 'getting-started' }
+    return { name: 'login' }
   }
 })
 
