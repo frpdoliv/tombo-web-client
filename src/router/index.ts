@@ -35,7 +35,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/dashboard',
     name: 'dashboard',
-    component: DashboardView
+    component: DashboardView,
+    meta: {
+      title: 'Dashboard'
+    }
   }
 ]
 
@@ -45,12 +48,16 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
-  if (!await isAuthenticated() && !to.meta?.middleware?.has('guest') && to.name !== 'getting-started') {
+  const hasValidSession = await isAuthenticated()
+  if (!hasValidSession && !to.meta?.middleware?.has('guest') && to.name !== 'login') {
     return { name: 'login' }
+  } else if (hasValidSession && to.meta?.middleware?.has('guest') && to.name !== 'dashboard') {
+    return { name: 'dashboard' }
   }
 })
 
 router.beforeEach((to) => {
+  console.log('Entered Title')
   document.title = to.meta.title
     ? `${process.env.VUE_APP_TITLE} - ${to.meta.title || ''}`
     : process.env.VUE_APP_TITLE
