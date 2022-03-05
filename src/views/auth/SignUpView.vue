@@ -16,7 +16,7 @@
       <input id="confirmation-field" class="form-control" :class="{ 'is-invalid': errors.password, 'is-valid': !errors.password && receivedValidResponse }" type="password" v-model="passwordConfirmation" required>
       <div id="password-errors" class="invalid-feedback d-block">{{ errors.password && passwordErrors }}</div>
     </div>
-    <div class="text-end">
+    <div class="text-end mt-4">
       <router-link :to="{ name: 'login' }">Login instead</router-link>
       <button class="btn btn-primary ms-3" type="submit">Create Account</button>
     </div>
